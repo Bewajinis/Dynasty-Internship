@@ -18,6 +18,6 @@ function calculateBmi() {
 }
 
 function reload() {
-    window.location.reload
+    window.location.reload()
 }
 
