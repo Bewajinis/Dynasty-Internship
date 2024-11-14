@@ -34,6 +34,16 @@ button {
     font-size: 15px;
     margin-bottom: 15px;
 }
+label {
+    display: block;
+    margin-bottom: 10px; /* Adds space below each label */
+    font-size: 16px;    /* Optional: Adjust font size if necessary */
+    color: #181313;        /* Optional: Set color if labels are not styled */
+}
+
+input[type="number"] {
+    margin-bottom: 15px; /* Additional space between input fields */
+}
 
 /* Tablet Screens (between 768px and 1200px) */
 @media (max-width: 1200px) and (min-width: 768px) {
