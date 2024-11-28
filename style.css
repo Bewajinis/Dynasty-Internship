@@ -1,0 +1,81 @@
+/* General Styles (for larger screens) */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #ccccda;
+}
+
+.container {
+    max-width: 400px;
+    padding: 20px;
+    background: rgba(201, 181, 181, 0.8);
+    border-radius: 1px;
+    box-shadow: 0 13px 8px rgba(15, 14, 14, 0.1);
+    text-align: center;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+input[type="number"],
+button {
+    width: 35%;           
+    padding: 10px;
+    margin: 6px 0;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 10px; /* Adds space below each label */
+    font-size: 16px;    /* Optional: Adjust font size if necessary */
+    color: #181313;        /* Optional: Set color if labels are not styled */
+}
+
+input[type="number"] {
+    margin-bottom: 15px; /* Additional space between input fields */
+}
+
+/* Tablet Screens (between 768px and 1200px) */
+@media (max-width: 1200px) and (min-width: 768px) {
+    .container {
+        max-width: 90%; 
+    }
+
+    h2 {
+        font-size: 22px;   
+    }
+
+    input[type="number"],
+    button {
+        width: 80%;        
+        font-size: 14px;
+    }
+}
+
+/* Mobile Screens (767px and below) */
+@media (max-width: 767px) {
+    .container {
+        max-width: 95%;    
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 20px;   
+    }
+
+    input[type="number"],
+    button {
+        width: 100%;       
+        font-size: 14px;   
+    }
+}
