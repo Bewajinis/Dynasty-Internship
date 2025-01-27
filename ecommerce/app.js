@@ -142,8 +142,38 @@ const close = document.querySelector(".close");
 
 productButton.addEventListener("click", () => {
     payment.style.display="flex"
+
 });
 
 close.addEventListener("click", () => {
     payment.style.display="none"
-})
+});
+
+// paystack
+const paymentForm = document.getElementById('paymentForm');
+paymentForm.addEventListener('submit', payWithPaystack, false);
+
+function payWithPaystack() {
+
+    let handler = PaystackPop.setup({
+        key: 'pk_test_353ab3a55e63e69dda077c9f8e6361cac84db427',
+        email: document.getElementById('email-address').value,
+        amount: document.querySelector(".productPrice").value * 100,
+        currency: "NGN",
+        ref: ''+Math.floor((Math.random() + 100000000) +1),
+
+        onClose: function(){
+            alert('Window closed.');
+        },
+        callback: function(response){
+            let message = 'Payment complete! Reference: ' + response.reference;
+            alert(message);
+        }
+    });
+
+    handler.openIframe();
+
+
+}
+
+ 
