@@ -109,28 +109,40 @@ function handle_changeItemQuantity() {
 
 function handle_buyOrder() {
     if (itemsAdded.length <= 0) {
-        showTemporaryAlert('❌ There is no order to place yet. Please add items to your cart.', 3000);
+        alert('There is no order to place yet. Please add items to your cart.');
         return;
     }
 
     // Get the total price from the cart
     const totalElement = document.querySelector('.total-price').innerHTML;
-
-    // Remove currency symbols, commas, and spaces
+    
+    // Remove currency symbol (#), commas, and spaces, then parse to float
     const totalPrice = parseFloat(totalElement.replace(/[₦#,]/g, '').trim());
 
-    // Prompt user for email with validation
+    // Prompt user for email (ensure it's provided)
     let email = prompt("Please enter your email address:");
-    if (!validateEmail(email)) return;
+    while (!email) {
+        alert("Email is required to proceed.");
+        email = prompt("Please enter your email address:");
+    }
 
-    // Prompt user for amount with validation
+    // Validate email format
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    while (!emailPattern.test(email)) {
+        alert("Invalid email format. Please enter a valid email.");
+        email = prompt("Please enter your email address:");
+    }
+
+    // Keep prompting until the correct amount is entered
     let amount;
     do {
         amount = prompt(`Enter the total amount to pay (₦${totalPrice.toFixed(2)}):`);
+        
+        // Remove commas, currency symbols, and spaces from input
         amount = parseFloat(amount.replace(/[₦#,]/g, '').trim());
 
         if (isNaN(amount) || amount !== totalPrice) {
-            showTemporaryAlert(`❌ Incorrect amount. Please enter the exact total price: ₦${totalPrice.toFixed(2)}`, 3000);
+            alert(`❌ Incorrect amount. Please enter the exact total price: ₦${totalPrice.toFixed(2)}`);
         }
     } while (isNaN(amount) || amount !== totalPrice);
 
@@ -138,21 +150,69 @@ function handle_buyOrder() {
     payWithPaystack(email, totalPrice);
 
     // Clear the cart after successful payment
-    const cartContent = document.querySelector('.cart-content');
+    const cartContent = cart.querySelector('.cart-content');
     cartContent.innerHTML = "";
+    alert("✅ Your order has been placed successfully!"); 
     itemsAdded = [];
 
-    // Reset cart count to zero
-    updateCartCount(); 
     update();
 }
 
-// Email validation function
-function validateEmail(email) {
-    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailPattern.test(email)) {
-        showTemporaryAlert("❌ Invalid email format. Please enter a valid email.", 3000);
-        return false;
-    }
-    return true;
+
+// Update total price
+function updateTotal() {
+    let cartBoxes = document.querySelectorAll('.cart-box');
+    const totalElement = cart.querySelector('.total-price');
+    let total = 0;
+
+    cartBoxes.forEach(cartBox => {
+        let priceElement = cartBox.querySelector('.cart-price');
+        let price = parseFloat(priceElement.innerHTML.replace(/[#,]/g, ''));
+        let quantity = cartBox.querySelector('.cart-quantity').value;
+        
+        total += price * quantity;
+    });
+
+    totalElement.innerHTML = `#${total.toFixed(2)}`;
+}
+
+// Updating cart count
+function updateCartCount() {
+    const cartCountElement = document.querySelector('#cart-count');
+    cartCountElement.textContent = itemsAdded.length;
+}
+
+// HTML components
+function CartBoxComponent(title, price, ImgSrc) {
+    return `
+        <div class="cart-box">
+            <img src=${ImgSrc} alt="" class="cart-img">
+            <div class="detail-box">
+                <div class="cart-product-title">${title}</div>
+                <div class="cart-price">${price}</div>
+                <input type="number" value="1" class="cart-quantity">
+            </div>
+            <i class="bx bxs-trash-alt cart-remove"></i>
+        </div>`;
+}
+
+// Paystack payment function
+function payWithPaystack(email, amount) {
+    let handler = PaystackPop.setup({
+        key: 'pk_test_353ab3a55e63e69dda077c9f8e6361cac84db427',
+        email: email,
+        amount: amount * 100, 
+        currency: "NGN",
+        ref: '' + Math.floor((Math.random() * 100000000) + 1),
+
+        onClose: function () {
+            alert('Payment window closed.');
+        },
+        callback: function (response) {
+            let message = 'Payment complete! Reference: ' + response.reference;
+            alert(message);
+        }
+    });
+
+    handler.openIframe();
 }
